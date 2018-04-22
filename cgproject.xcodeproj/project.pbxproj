@@ -10,6 +10,7 @@
 		4B19EC1B208CC31600A6B1B4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B19EC1A208CC31600A6B1B4 /* main.cpp */; };
 		4B448CB7208CC64D00273406 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B448CB6208CC64D00273406 /* OpenGL.framework */; };
 		4B448CB9208CC65200273406 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B448CB8208CC65200273406 /* GLUT.framework */; };
+		4B448CBB208CD29A00273406 /* minesweeper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B448CBA208CD29A00273406 /* minesweeper.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +30,7 @@
 		4B19EC1A208CC31600A6B1B4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		4B448CB6208CC64D00273406 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		4B448CB8208CC65200273406 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		4B448CBA208CD29A00273406 /* minesweeper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = minesweeper.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 		4B19EC19208CC31600A6B1B4 /* cgproject */ = {
 			isa = PBXGroup;
 			children = (
+				4B448CBA208CD29A00273406 /* minesweeper.cpp */,
 				4B19EC1A208CC31600A6B1B4 /* main.cpp */,
 			);
 			path = cgproject;
@@ -134,6 +137,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B448CBB208CD29A00273406 /* minesweeper.cpp in Sources */,
 				4B19EC1B208CC31600A6B1B4 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -254,6 +258,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -262,6 +267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
