@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4B19EC1B208CC31600A6B1B4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B19EC1A208CC31600A6B1B4 /* main.cpp */; };
+		4B448CB7208CC64D00273406 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B448CB6208CC64D00273406 /* OpenGL.framework */; };
+		4B448CB9208CC65200273406 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B448CB8208CC65200273406 /* GLUT.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,8 @@
 /* Begin PBXFileReference section */
 		4B19EC17208CC31600A6B1B4 /* cgproject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cgproject; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B19EC1A208CC31600A6B1B4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		4B448CB6208CC64D00273406 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		4B448CB8208CC65200273406 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +36,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B448CB9208CC65200273406 /* GLUT.framework in Frameworks */,
+				4B448CB7208CC64D00273406 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +49,7 @@
 			children = (
 				4B19EC19208CC31600A6B1B4 /* cgproject */,
 				4B19EC18208CC31600A6B1B4 /* Products */,
+				4B448CB5208CC64D00273406 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,6 +67,15 @@
 				4B19EC1A208CC31600A6B1B4 /* main.cpp */,
 			);
 			path = cgproject;
+			sourceTree = "<group>";
+		};
+		4B448CB5208CC64D00273406 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4B448CB8208CC65200273406 /* GLUT.framework */,
+				4B448CB6208CC64D00273406 /* OpenGL.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
