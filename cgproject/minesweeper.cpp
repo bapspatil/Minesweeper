@@ -22,26 +22,23 @@
 using namespace std;
 
 enum {UNCOVER,COVER,MINE=-1,BLANK,ADJACENT,LOSE=-1,UNKNOWN,WIN,IN_PROGRESS,GAME_OVER};
-const int dim=10,mines=10;
-const int max_x=100,max_y=100,xint=max_x/dim,yint=max_y/dim;
+
+const int dim=10, mines=10;
+const int max_x=100, max_y=100, xint=max_x/dim, yint=max_y/dim;
 int flag=0;
-class cell
-{
-    public :
-    int content ;
-    //0 blank,1-8 adjacent mines,-1 mine
-    int status;
-    //0 uncovered ,1 covered
-    cell()
-    {
-        content=BLANK;status=COVER;
-        
+
+class cell {
+public:
+    int content; // 0 blank,1-8 adjacent mines,-1 mine
+    int status; // 0 uncovered, 1 covered
+    cell() {
+        content=BLANK;
+        status=COVER;
     }
 };
 cell board[dim][dim];
-class GAMEPLAY
-{
-    
+
+class GAMEPLAY {
 public:
     int flagged,uncovered,covered,status,result;
     int mine_pos[mines][2],mine_count;
@@ -51,33 +48,26 @@ public:
         covered=dim*dim;
         result=UNKNOWN;
         mine_count=0;
-        
         for(int i=0;i<mines;i++)
             for(int j=0;j<2;j++)
-                mine_pos[i][j]=-1;                      //make two dimentional array to store the position of mines
-        
+                mine_pos[i][j]=-1; // two dimensional array to store the position of mines
     }
     void add_mine(int i,int j)
     {
-        
         mine_pos[mine_count][0]=i;
         mine_pos[mine_count][1]=j;
         mine_count++;
     }
     int check()
     {
-        
         if(result!=UNKNOWN)
             return result;
-        
         if(covered==10)
         {
             status=GAME_OVER;
             result=WIN;
             return WIN;
         }
-        
-        
         for(int i=0;i<mines;i++)
         {
             if(UNCOVER==board[mine_pos[i][0]][mine_pos[i][1]].status)
@@ -86,19 +76,14 @@ public:
                 result=LOSE;
                 return LOSE;
             }
-            
         }
         return UNKNOWN;
     }
-    
 };
-
-
-
-
 GAMEPLAY game_stats;
+
 void drawstring(float x,float y, float z ,char *string);
-void front(void);
+void splash_screen(void);
 void initiate_board();
 void draw_board();
 void init_mines(int num,int dim);
@@ -109,11 +94,9 @@ void uncover_area(int i, int j);
 void uncover_area_check_cell(int k, int l);
 void left_click(int i,int j);
 void game_over(int result);
-
 void draw_square(int x,int y,int color);
 void user_input(int button,int state,int x,int y);
 void show_content(int i,int j);
-
 void myKeyboardFunc( unsigned char key, int x, int y );
 void gl_init();
 void display();
@@ -141,23 +124,14 @@ int main(int argc, char *argv[])
     return 1;
 }
 
-
-
-
-
-
 void mydisplay(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
     if(flag==0)
-        front();
+        splash_screen();
     if(flag==1)
         display();
-    
 }
-
-
-
 
 /*********init_mines********/
 void init_mines(int num,int dim)
@@ -181,7 +155,6 @@ void init_mines(int num,int dim)
 }
 
 /********init_mine_adjacent*********/
-
 void init_mines_adjacent(int num, int dim)
 {
     
@@ -189,10 +162,11 @@ void init_mines_adjacent(int num, int dim)
     for(i=0;i<dim;i++)
         for(j=0;j<dim;j++)
         {
-            
             if(board[i][j].content!=MINE)
-            {calc_adjacent_mines(i,j,dim);
-                count++;}
+            {
+                calc_adjacent_mines(i,j,dim);
+                count++;
+            }
         }
 }
 
@@ -211,8 +185,6 @@ void calc_adjacent_mines(int i,int j,int dim)
         if(j+1<dim)
             if(board[i-1][j+1].content==MINE)
                 board[i][j].content++;
-        
-        
     }
     if(j-1>=0)
         if(board[i][j-1].content==MINE)
@@ -235,27 +207,18 @@ void calc_adjacent_mines(int i,int j,int dim)
         
         
     }
-    
-    
 }
-
 
 /**********initiate_board***********/
 void initiate_board()
 {
-    
     init_mines(mines,dim);
     init_mines_adjacent(mines,dim);
 }
 
-
-
-
-
 /***************uncover_cell*******************/
 void uncover_cell(int i , int j)
 {
-    
     switch(board[i][j].content)
     {
         case MINE       :   show_content(i,j);
@@ -301,16 +264,13 @@ void uncover_area_check_cell(int k, int l)
             if(board[k][l].content==BLANK)
                 uncover_area(k,l);
         }
-        
     }
 }
 
 /**********uncover_area******************/
 void uncover_area(int i, int j)
 {
-    
     int k=i,l=j;
-    
     if(i-1>=0)
         uncover_area_check_cell(i-1,j);
     if(i+1<dim)
@@ -331,7 +291,7 @@ void left_click(int i,int j)
             game_over(game_stats.check());
             return;
         }
-        
+
         board[i][j].status=UNCOVER;
         game_stats.covered--;
         game_stats.uncovered++;
@@ -345,11 +305,9 @@ void left_click(int i,int j)
     }
 }
 
-
 /*************game_over*******************/
 void game_over(int result)
 {
-    
     if(result!=UNKNOWN)
     {
         glutMouseFunc(NULL);
@@ -359,16 +317,11 @@ void game_over(int result)
         else
             printMessage("YOU LOSE");
     }
-    
 }
-
-
 
 /**************************************************
  Graphic routines
  *********************************************/
-
-
 
 /**********user_input***********/
 
@@ -383,11 +336,9 @@ void user_input(int button,int state,int x,int y)
     }
 }
 
-
 /***********************draw_board**********************/
 void draw_board()
 {
-    
     int x_coord=0,y_coord=0;
     
     glClear(GL_COLOR_BUFFER_BIT);
@@ -412,14 +363,13 @@ void draw_board()
             draw_square(i,j,board[i][j].status);
             if(board[i][j].status==UNCOVER)
                 show_content(i,j);
-            
         }
     }
     
     glEnd();
     glFlush();
-    
 }
+
 /**********draw_square************/
 void draw_square(int i,int j,int color)
 {
@@ -435,7 +385,6 @@ void draw_square(int i,int j,int color)
     glVertex3i(x+1,y+yint-1,0);
     glVertex3i(x+xint-1,y+yint-1,0);
     glVertex3i(x+xint-1,y+1,0);
-    
     
     glEnd();
     glFlush();
@@ -466,8 +415,6 @@ void show_content(int i,int j)
     
 }
 
-
-
 /**********gl-init*************/
 void gl_init()
 {
@@ -480,7 +427,6 @@ void gl_init()
     
     glFlush();
     makeRasterFont();
-    
 }
 
 /**********************display *************************/
@@ -557,6 +503,7 @@ void makeRasterFont(void)
     glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, space);
     glEndList();
 }
+
 void printString(char *s)
 {
     glPushAttrib (GL_LIST_BIT);
@@ -572,33 +519,19 @@ void printString(char *s)
 
 
 
-void front(void)
+void splash_screen()
 {
-    
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glColor3f(0,0,1);
-    drawstring(20.0,90.0,0.0,"COLLEGE OF ENGINEERING");
-    glColor3f(0.7,0,1);
-    drawstring(21,82,0.0,"DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING");
-    glColor3f(1,0.5,0);
-    drawstring(38,70,0.0,"A MINI PROJECT ON");
-    glColor3f(1,0,0);
-    drawstring(40,60,0.0,"MINESWEEPER");
-    glColor3f(1,0.5,0);
-    drawstring(20,50,0.0,"By:");
-    glColor3f(0.5,0,0.5);
-    drawstring(10,40,0.0,"Some Name");
+    glColor3f(1.0, 1.0, 1.0);
+    drawstring(40,60,0.0,"Minesweeper Algorithm");
     
-    drawstring(10,34,0.0,"Some Name");
-    glColor3f(1,0.5,0);
-    drawstring(68,50,0.0,"Guides:");
-    glColor3f(0.5,0.2,0.2);
-    drawstring(63,40,0.0,"Mr. Some Name");
+    glColor3f(0.33,0.33,0.34);
+    drawstring(40,50,0.0,"by Bapusaheb Patil");
     
-    drawstring(63,34,0.0,"Mr.Some Name");
-    glColor3f(1,0.1,1);
-    drawstring(32,10,0.0," Press Enter to start MINESWEEPER");
+    glColor3f(0.46,0.43,0.11);
+    drawstring(40,10,0.0,"Press ENTER to start...");
+    
     glFlush();
     glutSwapBuffers();
 }
@@ -610,21 +543,18 @@ void drawstring(float x,float y, float z ,char *string)
     
     for(c=string;*c!='\0';c++)
     {
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*c);
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c);
     }
 }
 
-void myKeyboardFunc( unsigned char key, int x, int y )
+void myKeyboardFunc(unsigned char key, int x, int y)
 {
     switch(key)
     {
-            
         case 13:if(flag==0)
             flag=1;
             break;
         case 27 :exit(0);
-            
     }
-    
     mydisplay();
 }
