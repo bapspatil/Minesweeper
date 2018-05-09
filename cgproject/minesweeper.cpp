@@ -105,7 +105,6 @@ void printMessage(char *msg);
 void printString(char *s);
 void makeRasterFont(void);
 
-/**************************main************************/
 int main(int argc, char *argv[])
 {
     glutInit(&argc,argv);
@@ -133,7 +132,6 @@ void mydisplay(void)
         display();
 }
 
-/*********init_mines********/
 void init_mines(int num,int dim)
 {
     int i=0,j=0,count=0;
@@ -154,7 +152,6 @@ void init_mines(int num,int dim)
     
 }
 
-/********init_mine_adjacent*********/
 void init_mines_adjacent(int num, int dim)
 {
     
@@ -170,7 +167,6 @@ void init_mines_adjacent(int num, int dim)
         }
 }
 
-/********calc_adjacent_mines*********/
 void calc_adjacent_mines(int i,int j,int dim)
 {
     //row above mines
@@ -209,14 +205,12 @@ void calc_adjacent_mines(int i,int j,int dim)
     }
 }
 
-/**********initiate_board***********/
 void initiate_board()
 {
     init_mines(mines,dim);
     init_mines_adjacent(mines,dim);
 }
 
-/***************uncover_cell*******************/
 void uncover_cell(int i , int j)
 {
     switch(board[i][j].content)
@@ -249,7 +243,6 @@ void uncover_cell(int i , int j)
     }
 }
 
-/**********uncover_area_check_cell******************/
 void uncover_area_check_cell(int k, int l)
 {
     if(board[k][l].status==COVER)
@@ -267,7 +260,6 @@ void uncover_area_check_cell(int k, int l)
     }
 }
 
-/**********uncover_area******************/
 void uncover_area(int i, int j)
 {
     int k=i,l=j;
@@ -281,7 +273,6 @@ void uncover_area(int i, int j)
         uncover_area_check_cell(i,j+1);
 }
 
-/************left_click*****************/
 void left_click(int i,int j)
 {
     if(board[i][j].status==COVER)
@@ -305,7 +296,6 @@ void left_click(int i,int j)
     }
 }
 
-/*************game_over*******************/
 void game_over(int result)
 {
     if(result!=UNKNOWN)
@@ -319,12 +309,6 @@ void game_over(int result)
     }
 }
 
-/**************************************************
- Graphic routines
- *********************************************/
-
-/**********user_input***********/
-
 void user_input(int button,int state,int x,int y)
 {
     int square_x=x/120;
@@ -336,7 +320,6 @@ void user_input(int button,int state,int x,int y)
     }
 }
 
-/***********************draw_board**********************/
 void draw_board()
 {
     int x_coord=0,y_coord=0;
@@ -370,7 +353,6 @@ void draw_board()
     glFlush();
 }
 
-/**********draw_square************/
 void draw_square(int i,int j,int color)
 {
     int x,y;
@@ -390,7 +372,7 @@ void draw_square(int i,int j,int color)
     glFlush();
     
 }
-/************************print_message********************/
+
 void printMessage(char *msg)
 {
     glColor3f(1.0,0.0,0.0);
@@ -399,7 +381,6 @@ void printMessage(char *msg)
     glFlush();
 }
 
-/*************************show_content****************/
 void show_content(int i,int j)
 {
     char temp=board[i][j].content+48;
@@ -415,7 +396,6 @@ void show_content(int i,int j)
     
 }
 
-/**********gl-init*************/
 void gl_init()
 {
     glClearColor(0.0,0.0,0.0,0);
@@ -429,16 +409,13 @@ void gl_init()
     makeRasterFont();
 }
 
-/**********************display *************************/
 void display()
 {
-    static int i=0;
     draw_board();
     
     game_over(game_stats.check());
 }
 
-/*************************Font_display_list*************************/
 GLubyte space[] =
 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 GLubyte letters[][13] = {
@@ -511,13 +488,6 @@ void printString(char *s)
     glCallLists(strlen(s), GL_UNSIGNED_BYTE, (GLubyte *) s);
     glPopAttrib ();
 }
-
-
-
-
-
-
-
 
 void splash_screen()
 {
