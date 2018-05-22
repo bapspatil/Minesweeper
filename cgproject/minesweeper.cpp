@@ -27,22 +27,22 @@ const int dim=10, mines=10;
 const int max_x=100, max_y=100, xint=max_x/dim, yint=max_y/dim;
 int flag=0;
 
-class cell {
+class Square {
 public:
-    int content; // 0 blank,1-8 adjacent mines,-1 mine
-    int status; // 0 uncovered, 1 covered
-    cell() {
+    int content; // 0 blank, 1-8 adjacent mines, -1 mine
+    int status; // 0 uncovered square, 1 covered square
+    Square() {
         content=BLANK;
         status=COVER;
     }
 };
-cell board[dim][dim];
+Square board[dim][dim];
 
-class GAMEPLAY {
+class Session {
 public:
     int flagged,uncovered,covered,status,result;
     int mine_pos[mines][2],mine_count;
-    GAMEPLAY()
+    Session()
     {
         uncovered=0;
         covered=dim*dim;
@@ -50,7 +50,7 @@ public:
         mine_count=0;
         for(int i=0;i<mines;i++)
             for(int j=0;j<2;j++)
-                mine_pos[i][j]=-1; // two dimensional array to store the position of mines
+                mine_pos[i][j]=-1; // 2D array that stores the position of mines
     }
     void add_mine(int i,int j)
     {
@@ -80,9 +80,9 @@ public:
         return UNKNOWN;
     }
 };
-GAMEPLAY game_stats;
+Session gameplay_session;
 
-void drawstring(float x,float y, float z ,char *string);
+void draw_font(float x,float y, float z ,char *string);
 void splash_screen(void);
 void initiate_board();
 void draw_board();
@@ -97,13 +97,13 @@ void game_over(int result);
 void draw_square(int x,int y,int color);
 void user_input(int button,int state,int x,int y);
 void show_content(int i,int j);
-void myKeyboardFunc( unsigned char key, int x, int y );
+void keyboard_func( unsigned char key, int x, int y );
 void gl_init();
 void display();
 void mydisplay(void);
-void printMessage(char *msg);
-void printString(char *s);
-void makeRasterFont(void);
+void print_message(char *msg);
+void print_string(char *s);
+void create_raster_fonts(void);
 
 int main(int argc, char *argv[])
 {
@@ -111,9 +111,9 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
     glutInitWindowSize(1200,650);
     glutInitWindowPosition(100,50);
-    glutCreateWindow("Minesweeper");
+    glutCreateWindow("Minesweeper Algorithm by Bapusaheb Patil");
     glutDisplayFunc(mydisplay);
-    glutKeyboardFunc(myKeyboardFunc);
+    glutKeyboardFunc(keyboard_func);
     glutMouseFunc(user_input);
     
     gl_init();
@@ -137,39 +137,32 @@ void init_mines(int num,int dim)
     int i=0,j=0,count=0;
     while(count!=num)
     {
-        
         i=rand()%dim;
         j=rand()%dim;
-        
         if(board[i][j].content!=MINE)
         {
             board[i][j].content=MINE;
             count++;
-            game_stats.add_mine(i,j);
+            gameplay_session.add_mine(i,j);
         }
-        
     }
-    
 }
 
 void init_mines_adjacent(int num, int dim)
 {
-    
     int i,j,count;
     for(i=0;i<dim;i++)
         for(j=0;j<dim;j++)
-        {
             if(board[i][j].content!=MINE)
             {
                 calc_adjacent_mines(i,j,dim);
                 count++;
             }
-        }
 }
 
 void calc_adjacent_mines(int i,int j,int dim)
 {
-    //row above mines
+    // This is the row above the mines
     if(i-1>=0)
     {
         if(j-1>=0)
@@ -200,8 +193,6 @@ void calc_adjacent_mines(int i,int j,int dim)
         if(j+1<dim)
             if(board[i+1][j+1].content==MINE)
                 board[i][j].content++;
-        
-        
     }
 }
 
@@ -215,31 +206,17 @@ void uncover_cell(int i , int j)
 {
     switch(board[i][j].content)
     {
-        case MINE       :   show_content(i,j);
-            break;
-        case BLANK      :   show_content(i,j);
-            uncover_area(i,j);
-            break;
-        case 1          :   show_content(i,j);
-            break;
-        case 2          :   show_content(i,j);
-            break;
-        case 3          :   show_content(i,j);
-            break;
-        case 4          :   show_content(i,j);
-            break;
-        case 5          :   show_content(i,j);
-            break;
-        case 6          :   show_content(i,j);
-            break;
-        case 7          :   show_content(i,j);
-            break;
-            
-        case 8          :   show_content(i,j);
-            break;
+        case MINE       :   show_content(i,j); break;
+        case BLANK      :   show_content(i,j); uncover_area(i,j); break;
+        case 1          :   show_content(i,j); break;
+        case 2          :   show_content(i,j); break;
+        case 3          :   show_content(i,j); break;
+        case 4          :   show_content(i,j); break;
+        case 5          :   show_content(i,j); break;
+        case 6          :   show_content(i,j); break;
+        case 7          :   show_content(i,j); break;
+        case 8          :   show_content(i,j); break;
         default         :   break;
-            
-            
     }
 }
 
@@ -250,8 +227,8 @@ void uncover_area_check_cell(int k, int l)
         if(board[k][l].content!=MINE)
         {
             board[k][l].status=UNCOVER;
-            game_stats.covered--;
-            game_stats.uncovered++;
+            gameplay_session.covered--;
+            gameplay_session.uncovered++;
             draw_square(k,l,UNCOVER);
             show_content(k,l);
             if(board[k][l].content==BLANK)
@@ -277,20 +254,20 @@ void left_click(int i,int j)
 {
     if(board[i][j].status==COVER)
     {
-        if(UNKNOWN!=game_stats.check())
+        if(UNKNOWN!=gameplay_session.check())
         {
-            game_over(game_stats.check());
+            game_over(gameplay_session.check());
             return;
         }
 
         board[i][j].status=UNCOVER;
-        game_stats.covered--;
-        game_stats.uncovered++;
+        gameplay_session.covered--;
+        gameplay_session.uncovered++;
         draw_square(i,j,UNCOVER);
         uncover_cell(i,j);
-        if(UNKNOWN!=game_stats.check())
+        if(UNKNOWN!=gameplay_session.check())
         {
-            game_over(game_stats.check());
+            game_over(gameplay_session.check());
             return;
         }
     }
@@ -301,11 +278,10 @@ void game_over(int result)
     if(result!=UNKNOWN)
     {
         glutMouseFunc(NULL);
-        
         if(result==WIN)
-            printMessage("YOU WIN");
+            print_message("YOU HAVE SUCCESSFULLY COMPLETED THE MINESWEEPER ALGORITHM!");
         else
-            printMessage("YOU LOSE");
+            print_message("YOU HIT A MINE! MINESWEEPER ALGORITHM FAILED.");
     }
 }
 
@@ -315,9 +291,7 @@ void user_input(int button,int state,int x,int y)
     int square_y=(650-y)/65;
     
     if(button==GLUT_LEFT_BUTTON&&state==GLUT_DOWN&&flag==1)
-    {
         left_click(square_x,square_y);
-    }
 }
 
 void draw_board()
@@ -329,7 +303,6 @@ void draw_board()
     glBegin(GL_LINES);
     for(x_coord=0;x_coord<=max_x;x_coord+=xint)
     {
-        
         glVertex3i(x_coord,0,0);
         glVertex3i(x_coord,max_y,0);
     }
@@ -342,7 +315,6 @@ void draw_board()
     {
         for(int j=0;j<dim;j++)
         {
-            
             draw_square(i,j,board[i][j].status);
             if(board[i][j].status==UNCOVER)
                 show_content(i,j);
@@ -357,9 +329,9 @@ void draw_square(int i,int j,int color)
 {
     int x,y;
     if(color==COVER)
-        glColor3f(0.89,0.0,0.0);
+        glColor3f(0,0.0,1.0);
     else if(color==UNCOVER)
-        glColor3f(0,1,0);
+        glColor3f(1,1,1);
     x=i*xint;
     y=j*yint;
     glBegin(GL_POLYGON);
@@ -367,17 +339,14 @@ void draw_square(int i,int j,int color)
     glVertex3i(x+1,y+yint-1,0);
     glVertex3i(x+xint-1,y+yint-1,0);
     glVertex3i(x+xint-1,y+1,0);
-    
     glEnd();
     glFlush();
-    
 }
 
-void printMessage(char *msg)
+void print_message(char *msg)
 {
-    glColor3f(1.0,0.0,0.0);
-    glRasterPos2i(xint*4,yint*4);
-    printString(msg);
+    glColor3f(1.0,1.0,0.0);
+    draw_font(xint*4,yint*4, 0.0, msg);
     glFlush();
 }
 
@@ -388,12 +357,11 @@ void show_content(int i,int j)
         temp=77;
     if(board[i][j].content==BLANK)
         temp=32;
-    
+
     glColor3f(0.0,0.0,0.0);
     glRasterPos2i(i*xint+2,j*yint+2);
-    printString(&temp);
+    print_string(&temp);
     glFlush();
-    
 }
 
 void gl_init()
@@ -404,20 +372,17 @@ void gl_init()
     glOrtho(0.0,100.0,0.0,100.0,-100.0,100.0);
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT);
-    
     glFlush();
-    makeRasterFont();
+    create_raster_fonts();
 }
 
 void display()
 {
     draw_board();
-    
-    game_over(game_stats.check());
+    game_over(gameplay_session.check());
 }
 
-GLubyte space[] =
-{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+GLubyte space[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 GLubyte letters[][13] = {
     {0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xff, 0xc3, 0xc3, 0xc3, 0x66, 0x3c, 0x18},
     {0x00, 0x00, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe},
@@ -458,33 +423,33 @@ GLubyte digits[][13] = {
     {0xff, 0x81, 0x81, 0x81, 0x81, 0x81, 0xff, 0x81, 0x81, 0x81, 0x81, 0x81, 0xff},
     {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0xff, 0x81, 0x81, 0x81, 0x81, 0x81, 0xff}
 };
-GLuint fontOffset;
+GLuint font_offset;
 
-void makeRasterFont(void)
+void create_raster_fonts(void)
 {
     GLuint i, j;
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     
-    fontOffset = glGenLists (128);
+    font_offset = glGenLists (128);
     for (i = 0,j = 'A'; i < 26; i++,j++) {
-        glNewList(fontOffset + j, GL_COMPILE);
+        glNewList(font_offset + j, GL_COMPILE);
         glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, letters[i]);
         glEndList();
     }
     for (i = 0,j = '0'; i < 10; i++,j++) {
-        glNewList(fontOffset + j, GL_COMPILE);
+        glNewList(font_offset + j, GL_COMPILE);
         glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, digits[i]);
         glEndList();
     }
-    glNewList(fontOffset + ' ', GL_COMPILE);
+    glNewList(font_offset + ' ', GL_COMPILE);
     glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, space);
     glEndList();
 }
 
-void printString(char *s)
+void print_string(char *s)
 {
     glPushAttrib (GL_LIST_BIT);
-    glListBase(fontOffset);
+    glListBase(font_offset);
     glCallLists(strlen(s), GL_UNSIGNED_BYTE, (GLubyte *) s);
     glPopAttrib ();
 }
@@ -493,38 +458,47 @@ void splash_screen()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
+    glColor3f(0.33,0.33,0.34);
+    draw_font(43,80,0.0,"RNS Institute of Technology");
+    
     glColor3f(1.0, 1.0, 1.0);
-    drawstring(40,60,0.0,"Minesweeper Algorithm");
+    draw_font(45,60,0.0,"Minesweeper Algorithm");
     
     glColor3f(0.33,0.33,0.34);
-    drawstring(40,50,0.0,"by Bapusaheb Patil");
+    draw_font(35,40,0.0,"Bapusaheb Shankaragouda Patil | USN 1RN15CS033");
     
-    glColor3f(0.46,0.43,0.11);
-    drawstring(40,10,0.0,"Press ENTER to start...");
+    glColor3f(0.33,0.33,0.34);
+    draw_font(10,30,0.0,"MENTORS:");
+    glColor3f(0.33,0.33,0.34);
+    draw_font(10,25,0.0,"Mrs. S Mamatha Jajur");
+    glColor3f(0.33,0.33,0.34);
+    draw_font(10,20,0.0,"Mrs. Sampada K S");
+    
+    glColor3f(1.0, 1.0, 0.0);
+    draw_font(45,10,0.0,"ENTER: Start | ESC: Quit");
     
     glFlush();
     glutSwapBuffers();
 }
 
-void drawstring(float x,float y, float z ,char *string)
+void draw_font(float x,float y, float z ,char *string)
 {
     char *c;
     glRasterPos3i(x,y,z);
-    
     for(c=string;*c!='\0';c++)
-    {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c);
-    }
 }
 
-void myKeyboardFunc(unsigned char key, int x, int y)
+void keyboard_func(unsigned char key, int x, int y)
 {
     switch(key)
     {
-        case 13:if(flag==0)
+        case 13:
+            if(flag==0)
             flag=1;
             break;
-        case 27 :exit(0);
+        case 27:
+            exit(0);
     }
     mydisplay();
 }
